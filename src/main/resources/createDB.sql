@@ -1,7 +1,7 @@
 create table users
 (
     userId       int          not null auto_increment primary key,
-    userName     varchar(45)  not null,
+    userName     varchar(45)  not null unique,
     userPassword varchar(255) not null
 )
 ENGINE = InnoDB;

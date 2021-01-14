@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>user Update</title>
@@ -10,21 +10,22 @@
 <hr/>
 <br/>
 
-<form th:method="PATCH" th:action="@{/user/{id}(id=${user.getId()})}" th:object="${user}">
+<form th:method="PATCH" th:action="@{/{id}(id=${user.getUserId()})}" th:object="${user}">
 
     <label for="name">Enter name: </label>
-    <input type="text" th:field="*{name}" id="name" />
+    <input type="text" th:field="*{userName}" id="name" />
     <br/>
     <label for="password">Enter password: </label>
-    <input type="text" th:field="*{password}" id="password" />
+    <input type="text" th:field="*{userPassword}" id="password" />
     <br/>
-    <label for="role">Enter role: </label>
-    <input type="text" th:field="*{role}" id="role" />
-    <br/>
-
-    <br/>
-
-    <input type="submit" value="Update!"/>
+    <div>
+        <p>Choose role: </p>
+        Admin: <input type="checkbox" name="roleAdmin" th:checked="${roleAdmin}">
+        <br>
+        User: <input type="checkbox" name="roleUser" th:checked="${roleUser}">
+        <br>
+    </div>
+    <input type="submit" value="Create!"/>
 </form>
 
 </body>
