@@ -45,7 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(successUserHandler) // подключаем наш SuccessHandler для перенеправления по ролям
                 .loginProcessingUrl("/login")
                 .usernameParameter("j_username")
-                .passwordParameter("j_password");
+                .passwordParameter("j_password")
+                .and().logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login");
 
     }
 

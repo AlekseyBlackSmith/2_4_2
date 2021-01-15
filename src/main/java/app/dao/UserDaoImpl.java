@@ -1,11 +1,13 @@
 package app.dao;
 
+import app.model.Role;
 import app.model.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -43,6 +45,7 @@ public class UserDaoImpl implements UserDao {
                 .setParameter("userName", userName)
                 .getSingleResult();
     }
+
 
     @Override
     public List<User> listUsers() {

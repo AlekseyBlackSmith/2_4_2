@@ -83,9 +83,9 @@ public class AppController {
 
     //
     @PatchMapping("/{id}")
-    public String edit(Model model,
+    public String edit(//Model model,
                        @ModelAttribute("user") User user,
-                       @PathVariable("id") Long id,
+                       //@PathVariable("id") Long id,
                        @RequestParam(name="roleAdmin", required = false) boolean isAdmin,
                        @RequestParam(name = "roleUser", required = false) boolean isUser) {
         user.setRoles(getRolesFromForms(isAdmin, isUser));
@@ -93,11 +93,13 @@ public class AppController {
         return "redirect:/users";
     }
 
+    //удаление по id
     @DeleteMapping("/{id}")
     public String delite(@PathVariable("id") Long id) {
         userService.removeById(id);
         return "redirect:/users";
     }
+
 
 
     private Set<Role> getRolesFromForms(boolean isAdmin, boolean isUser) {
