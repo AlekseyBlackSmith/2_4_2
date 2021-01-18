@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Set;
+
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -28,8 +28,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void update(User user) {
-        entityManager.merge(user);
+    public void update(Long id, User user) {
+        User userForUpdate = getById(id);
+        userForUpdate.setUserName(user.getUserName());
+        userForUpdate.setUserPassword(user.getUserPassword());
+        userForUpdate.setRoles(user.getRoles());
     }
 
     @Override
@@ -49,7 +52,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> listUsers() {
-        return entityManager.createQuery("from User",User.class)
+        return entityManager.createQuery("from User", User.class)
+                .getResultList();
+    }
+
+    @Override
+    public List<Role> listRoles() {
+        return entityManager.createQuery("from Role", Role.class)
                 .getResultList();
     }
 

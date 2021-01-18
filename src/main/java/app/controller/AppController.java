@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLOutput;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +39,7 @@ public class AppController {
     public String userPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("user", userService.getByName(authentication.getName()));
+        model.addAttribute("roles", userService.getByName(authentication.getName()).getRoles());
         return "show";
     }
 
@@ -47,6 +48,7 @@ public class AppController {
     @GetMapping("/{id}")
     public String showUser(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userService.getById(id));
+        model.addAttribute("roles", userService.getById(id).getRoles());
         return "show";
     }
 
@@ -81,15 +83,14 @@ public class AppController {
         return "update";
     }
 
-    //
+    //получение обновленного пользователя из формы
     @PatchMapping("/{id}")
-    public String edit(//Model model,
-                       @ModelAttribute("user") User user,
-                       //@PathVariable("id") Long id,
+    public String edit(@ModelAttribute("user") User user,
+                       @PathVariable("id") Long id,
                        @RequestParam(name="roleAdmin", required = false) boolean isAdmin,
                        @RequestParam(name = "roleUser", required = false) boolean isUser) {
         user.setRoles(getRolesFromForms(isAdmin, isUser));
-        userService.update(user);
+        userService.update(id, user);
         return "redirect:/users";
     }
 
@@ -101,7 +102,7 @@ public class AppController {
     }
 
 
-
+    //вспомогательный метод
     private Set<Role> getRolesFromForms(boolean isAdmin, boolean isUser) {
         Set<Role> newRoles = new HashSet<>();
 

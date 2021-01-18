@@ -33,9 +33,6 @@ public class Role implements GrantedAuthority {
     }
 
 
-
-
-
     public Long getRoleId() {
         return roleId;
     }
@@ -60,5 +57,8 @@ public class Role implements GrantedAuthority {
         this.users = users;
     }
 
-
+    @Override
+    public String toString() {
+        return roleName;
+    }
 }

@@ -14,6 +14,10 @@
 <p th:text="${'Id: ' + user.getUserId()}">userId</p>
 <p th:text="${'Name: ' + user.getUserName()}">userName</p>
 <p th:text="${'Password: ' + user.getUserPassword()}">userPassword</p>
+<p>Roles:</p>
+<div th:each="role : ${roles}">
+    <p th:text="${role}"></p>
+</div>
 
 <br/>
 <hr/>

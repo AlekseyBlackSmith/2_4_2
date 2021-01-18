@@ -1,6 +1,7 @@
 package app.service;
 
 import app.dao.UserDao;
+import app.model.Role;
 import app.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void update(User user) {
-        userDao.update(user);
+    public void update(Long id,User user) {
+        userDao.update(id, user);
     }
 
     @Override
@@ -51,5 +52,10 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public List<User> listUsers() {
         return userDao.listUsers();
+    }
+
+    @Override
+    public List<Role> listRole() {
+        return userDao.listRoles();
     }
 }
