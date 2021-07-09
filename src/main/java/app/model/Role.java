@@ -3,7 +3,7 @@ package app.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
@@ -16,8 +16,6 @@ public class Role implements GrantedAuthority {
     @Column(name = "roleName", unique = true)
     private String roleName;
 
-    @ManyToMany(mappedBy = "roles")
-    private List<User> users;
 
     public Role() {
     }
@@ -31,7 +29,6 @@ public class Role implements GrantedAuthority {
     public String getAuthority() {
         return roleName;
     }
-
 
     public Long getRoleId() {
         return roleId;
@@ -49,12 +46,18 @@ public class Role implements GrantedAuthority {
         this.roleName = roleName;
     }
 
-    public List<User> getUsers() {
-        return users;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(roleId, role.roleId) && Objects.equals(roleName, role.roleName);
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    @Override
+    public int hashCode() {
+        return Objects.hash(roleId, roleName);
     }
 
     @Override

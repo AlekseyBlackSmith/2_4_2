@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 @Configuration
@@ -23,12 +23,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(UserDetailsService userDetailsService, SuccessUserHandler successUserHandler) {
         this.userDetailsService = userDetailsService;
         this.successUserHandler = successUserHandler;
-
     }
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()); // конфигурация для прохождения аутентификации
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder()); // конфигурация для прохождения аутентификации
     }
 
     @Override
@@ -37,11 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/login").permitAll() // доступность всем
-                .antMatchers("/show").access("hasRole('ROLE_USER')")
-                .antMatchers("/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/show").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers("/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
-                .and().formLogin()
-                .loginPage("/login")
+                .and().formLogin().loginPage("/login")
                 .successHandler(successUserHandler) // подключаем наш SuccessHandler для перенеправления по ролям
                 .loginProcessingUrl("/login")
                 .usernameParameter("j_username")
@@ -49,13 +47,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login");
-
     }
 
-    // Необходимо для шифрования паролей
-    // В данном примере не используется, отключен
+//     Необходимо для шифрования паролей
+//     В данном примере не используется, отключен
+//    @Bean
+//    public static NoOpPasswordEncoder passwordEncoder() {
+//        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+//    }
+
     @Bean
-    public static NoOpPasswordEncoder passwordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
 }

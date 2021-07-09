@@ -1,13 +1,11 @@
 package app.dao;
 
-import app.model.Role;
 import app.model.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -16,50 +14,43 @@ public class UserDaoImpl implements UserDao {
     private EntityManager entityManager;
 
     @Override
-    public void add(User user) {
+    public void addUser(User user) {
         entityManager.persist(user);
     }
 
     @Override
-    public void removeById(Long userId) {
-        entityManager.createQuery("delete from User where userId = :userId")
-                .setParameter("userId", userId)
-                .executeUpdate();
+    public void removeUserById(Long userId) {
+        entityManager.remove(entityManager.find(User.class, userId));
     }
 
     @Override
-    public void update(Long id, User user) {
-        User userForUpdate = getById(id);
-        userForUpdate.setUserName(user.getUserName());
-        userForUpdate.setUserPassword(user.getUserPassword());
-        userForUpdate.setRoles(user.getRoles());
+    public void updateUser(User user) {
+        entityManager.merge(user);
     }
 
     @Override
-    public User getById(Long userId) {
-        return entityManager.createQuery("from User where userId = :userId", User.class)
-                .setParameter("userId", userId)
+    public User getUserById(Long userId) {
+        return entityManager.find(User.class, userId);
+    }
+
+    @Override
+    public User getUserByNameWithRoles(String userName) {
+    return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.userName = :userName", User.class)
+            .setParameter("userName", userName)
+            .getSingleResult();
+}
+
+    @Override
+    public List<User> getAllUsers() {
+    return entityManager.createQuery("SELECT u FROM User u", User.class)
+            .getResultList();
+}
+
+    @Override
+    public User getUserByIdWithRoles(Long id) {
+        return entityManager.createQuery("SELECT DISTINCT u FROM User u JOIN FETCH u.roles WHERE u.userId = :id", User.class)
+                .setParameter("id", id)
                 .getSingleResult();
-    }
-
-    @Override
-    public User getByName(String userName) {
-        return entityManager.createQuery("from User where userName = :userName", User.class)
-                .setParameter("userName", userName)
-                .getSingleResult();
-    }
-
-
-    @Override
-    public List<User> listUsers() {
-        return entityManager.createQuery("from User", User.class)
-                .getResultList();
-    }
-
-    @Override
-    public List<Role> listRoles() {
-        return entityManager.createQuery("from Role", Role.class)
-                .getResultList();
     }
 
 }

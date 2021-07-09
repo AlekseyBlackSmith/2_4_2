@@ -3,59 +3,57 @@ package app.service;
 import app.dao.UserDao;
 import app.model.Role;
 import app.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService{
     private final UserDao userDao;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, BCryptPasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    @Transactional
-    public void add(User user) {
-        userDao.add(user);
+    public void addUser(User user) {
+        user.setUserPassword(passwordEncoder.encode(user.getPassword()));
+        userDao.addUser(user);
     }
 
     @Override
-    @Transactional
-    public void removeById(Long id) {
-        userDao.removeById(id);
+    public void removeUserById(Long id) {
+        userDao.removeUserById(id);
     }
 
     @Override
-    @Transactional
-    public void update(Long id,User user) {
-        userDao.update(id, user);
+    public void updateUser(User user) {
+        user.setUserPassword(passwordEncoder.encode(user.getPassword()));
+        userDao.updateUser(user);
     }
 
     @Override
-    @Transactional
-    public User getById(Long id) {
-        return userDao.getById(id);
+    public User getUserById(Long id) {
+        return userDao.getUserById(id);
     }
 
     @Override
-    @Transactional
-    public User getByName(String name) {
-        return userDao.getByName(name);
+    public User getUserByNameWithRoles(String name) {
+        return userDao.getUserByNameWithRoles(name);
     }
 
     @Override
-    @Transactional
-    public List<User> listUsers() {
-        return userDao.listUsers();
+    public List<User> getAllUsers() {
+        return userDao.getAllUsers();
     }
 
     @Override
-    public List<Role> listRole() {
-        return userDao.listRoles();
+    public User getUserByIdWithRoles(Long id) {
+        return userDao.getUserByIdWithRoles(id);
     }
 }
